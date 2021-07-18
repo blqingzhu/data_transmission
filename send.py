@@ -5,6 +5,7 @@ from socket import *
 import struct
 import time
 
+
 HOST = '118.190.145.250'
 
 PORT = 2400
@@ -13,23 +14,40 @@ BUFFSIZE = 2048
 
 ADDR = (HOST, PORT)
 
-tctimeClient = socket(AF_INET, SOCK_STREAM)
 
-tctimeClient.connect(ADDR)
+def sendsocket(content):
+    tctimeClient = socket(AF_INET, SOCK_STREAM)
+    try:
+        tctimeClient.connect(ADDR)  # 连接Gateway服务器
+    except Exception as e:
+        print("connect excepiton: ")
+        print(e)
+    # a = b'\xAA\xBB\x01'
 
-a = [0xAA, 0xBB, 0x01]
-data = struct.pack("%dB" % (len(a)), *a)
+    # data = struct.pack("%dB" % (len(a)), *a)
+    while True:
+        # data = input(">")
 
-while True:
-    # data = input(">")
-
-    # if not data:
-    # break
-    # tctimeClient.send(data.encode())
-    tctimeClient.send(data)
-    # time.sleep(10)
-    data = tctimeClient.recv(1024)
-    if not data:
+        # if not data:
+        # break
+        # tctimeClient.send(data.encode())
+        tctimeClient.send(content)  # .encode()
+        # time.sleep(10)
+        try:
+            data = tctimeClient.recv(2048)
+        except Exception as e:
+            print(e)
+        if not data:
+            print("Link Disconnect!")
+            break
         break
-    print(data)
-tctimeClient.close()
+    return data
+
+
+# socket关闭
+def client_close(Client):
+    Client.close()
+
+
+if __name__ == "__main__":
+    sendsocket()
