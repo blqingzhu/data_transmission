@@ -1,17 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
-# -*- 按照协议要求组装数据 -*-
-import binascii
+# -*- 按照协议要求组装数据并发送 -*-
 import datetime
-import codecs
-import binascii
 from random import *
 from random import randrange
 from random import uniform
-import re
-from lonlat import getDistance, getDegree, computerOffsetPosition
-from send import sendsocket
-from transcode import toBytes, toJson
+from terminal.lonlat import getDistance, getDegree, computerOffsetPosition
+from terminal.send import sendsocket
+from terminal.transcode import toBytes, toJson
 
 Header = "AABB"  # 帧头
 Packet_type = ["03", "05"]  # 包类型

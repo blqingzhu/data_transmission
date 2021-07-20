@@ -1,3 +1,6 @@
+# -*- coding:utf-8 -*-
+# -*- 经纬度转换 -*-
+
 from math import radians, sin, cos, degrees, atan2, atan, tan, acos, sqrt, pi
 
 

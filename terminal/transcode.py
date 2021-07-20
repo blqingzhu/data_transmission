@@ -1,17 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 # -*- 数据转换 -*-
-import binascii
 import json
 import re
-import string
-from functools import reduce
-from locale import atoi
-
-from send import sendsocket
 
 
-# convert string to hex
+# json转字节流
 def toBytes(s):
     a = str(s)
     b = "".join("{:02x}".format(ord(c)) for c in a)
@@ -34,18 +28,17 @@ def find_last(string, str):
 # 匹配返回
 def toJson(s):
     s = str(s)
-    print(s)
     s = s[find_last(s, '{'):]
-    print(s)
+    # print(s)
     p1 = re.compile(r'[{](.*?)[}]', re.S)  # 最小匹配
     p2 = re.compile(r'[{](.*)[}]', re.S)  # 贪婪匹配
     result = re.findall(p1, s)
     if len(result) >= 1:
-        print(len(result))
-        print(result[len(result) - 1])
+        # print(len(result))
+        # print(result[len(result) - 1])
 
         rejson = "{" + result[len(result) - 1] + "}"
-        print(rejson)
+        # print(rejson)
 
         return json.loads(rejson)
     else:

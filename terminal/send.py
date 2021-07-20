@@ -2,9 +2,6 @@
 # -*- coding:utf-8 -*-
 # -*- 发送接收tcp -*-
 from socket import *
-import struct
-import time
-
 
 HOST = '118.190.145.250'
 
