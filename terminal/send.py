@@ -2,49 +2,89 @@
 # -*- coding:utf-8 -*-
 # -*- 发送接收tcp -*-
 from socket import *
+import struct
+import time
 
-HOST = '118.190.145.250'
+# HOST = '118.190.145.250'
+#
+# PORT = 2400
+from os.path import abspath, dirname
+import configparser as cparser
+# ======== 读取db_config.ini 文件配置 ===========
 
-PORT = 2400
+base_dir =dirname(abspath(__file__))
+base_dir = base_dir.replace('\\', '/')
+file_path = base_dir + "/socket_config.ini"
+cf = cparser.ConfigParser()
+cf.read(file_path)
+HOST = cf.get("config", "HOST")
+PORT = int(cf.get("config", "PORT"))
+BUFFSIZE =int( cf.get("config", "BUFFSIZE"))
 
-BUFFSIZE = 2048
+# HOST='118.190.145.250'
+# PORT=2400
 
-ADDR = (HOST, PORT)
+# BUFFSIZE=2048
 
 
-def sendsocket(content):
-    tctimeClient = socket(AF_INET, SOCK_STREAM)
-    try:
-        tctimeClient.connect(ADDR)  # 连接Gateway服务器
-    except Exception as e:
-        print("connect excepiton: ")
-        print(e)
-    # a = b'\xAA\xBB\x01'
+# ADDR = (HOST, PORT)
 
-    # data = struct.pack("%dB" % (len(a)), *a)
-    while True:
-        # data = input(">")
 
-        # if not data:
-        # break
-        # tctimeClient.send(data.encode())
-        tctimeClient.send(content)  # .encode()
-        # time.sleep(10)
+class socketClient():
+    def __init__(self):
+        self.ADDR = (HOST, PORT)
+        tctimeClient = socket(AF_INET, SOCK_STREAM)
+
+        self.tctimeClient = tctimeClient
+
+    def socketconnect(self):
         try:
-            data = tctimeClient.recv(2048)
+            self.tctimeClient.connect(self.ADDR)  # 连接Gateway服务器
+            print("socket连接")
         except Exception as e:
+            print("connect excepiton: ")
             print(e)
-        if not data:
-            print("Link Disconnect!")
+
+
+    def sendsocket(self, content):
+        data=''
+        self.tctimeClient.settimeout(5.0)
+        #     tctimeClient = socket(AF_INET, SOCK_STREAM)
+        #     try:
+        #         tctimeClient.connect(ADDR)  # 连接Gateway服务器
+        #     except Exception as e:
+        #         print("connect excepiton: ")
+        #         print(e)
+        # # a = b'\xAA\xBB\x01'
+        #
+        # # data = struct.pack("%dB" % (len(a)), *a)
+        while True:
+            # data = input(">")
+
+            # if not data:
+            # break
+            # tctimeClient.send(data.encode())
+            self.tctimeClient.send(content)  # .encode()
+            # time.sleep(10)
+            try:
+                data = self.tctimeClient.recv(BUFFSIZE)
+            except Exception as e:
+                print(e)
+            if not data:
+                # print("Link Disconnect!")
+                break
             break
-        break
-    return data
+        return data
 
-
-# socket关闭
-def client_close(Client):
-    Client.close()
+    # socket关闭
+    def client_close(self):
+        print("socket关闭")
+        self.tctimeClient.close()
 
 
 if __name__ == "__main__":
-    sendsocket()
+    # HOST = '118.190.145.250'
+    # PORT = 2400
+    Clientsocket = socketClient()
+    Clientsocket.sendsocket(b'\xAA\xBB\x01')
+    Clientsocket.client_close()
