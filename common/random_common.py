@@ -1,8 +1,13 @@
 import random
-
+import base64
+import os
 # 所有大小写字母
 import string
+from faker import Faker
 
+
+
+parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # 所有手机号前缀
 phon_prelist = ["130", "131", "132", "133", "134", "135", "136", "137", "138", "139", "147", "150", "151", "152", "153",
@@ -64,7 +69,7 @@ def random_emil():
     email_e = random.sample(str, str_len)  # 随机选取几个元素，返回list
     email_start = list(email_s) + email_e  # 字符串转list
     random.shuffle(email_start)  # 打乱列表，返回值为空
-    email = ''.join(email_start) + email_end   # 一个完整的邮箱号  list转字符串
+    email = ''.join(email_start) + email_end  # 一个完整的邮箱号  list转字符串
     return email
 
 
@@ -79,3 +84,18 @@ def random_name_str():
     ming = ''
     ming = MING[random.randint(0, len(MING) - 1)]
     return xing + ming
+
+
+# 图片转base64编码
+def converter(filename):
+    filedir = parentdir + '\image\\' + filename
+    fs = open(file=filedir, mode='rb')  # 二进制方式打开图文件
+    base64_data = base64.b64encode(fs.read())  # 读取文件内容，转换为base64编码
+    return base64_data
+
+
+if __name__ == '__main__':
+    fake = Faker(locale='zh_CN')
+
+    print("公司类".center(20, "-"))
+
