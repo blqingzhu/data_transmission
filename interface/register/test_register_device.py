@@ -7,7 +7,7 @@ from common.random_common import random_string, random_digits
 
 from faker import Faker
 
-from interface import global_var_model
+from interface.global_var import global_var_model
 from utx import tag,  Tag
 
 parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

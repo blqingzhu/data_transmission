@@ -6,6 +6,7 @@ company_admin_password = '5JSjZ8'
 company_admin_phone = '18172163341'
 company_name = '飞利信网络有限公司'
 ProjectTypeName='土方项目'
+ProjecName='项目名称_eYAgHl5bK'
 """
 管理后台用户信息
 """
@@ -65,6 +66,8 @@ company_Units = http_pex + "api/iot-device/v1/manage/constructUnits/getList"
 company_Devices = http_pex + "api/iot-device/v1/manage/ProjectInfo/getDeviceTypeNOtSelect?deviceName="
 #创建项目
 company_AddProject = http_pex + "api/iot-device/v1/manage/ProjectInfo/addProjectInfo"
+#获取项目
+company_ProjectList = http_pex + "api/iot-device/v1/manage/ProjectInfo/getProjectListByUid"
 """
 管理后台接口
 """

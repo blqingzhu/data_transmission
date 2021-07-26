@@ -4,20 +4,13 @@ import random
 import unittest
 import requests
 import os, sys
-from functools import wraps
-from requests.auth import HTTPBasicAuth
-from unittest import skipIf
 
-from cryptography.hazmat.primitives.hashes import MD5
-
-from common.CreditIdentifie import get_code
-from db_fixture.redis_db import Redis
-from common.random_common import random_string, random_name_str, phoneNO, random_emil, converter
+from common.random_common import random_string
 
 from faker import Faker
 
-from interface import global_var_model
-from utx import tag, utx, Tag
+from interface.global_var import global_var_model
+from utx import tag, Tag
 
 parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, parentdir)

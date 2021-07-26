@@ -1,2 +1,4 @@
-from urllib.request import getproxies
-getproxies()
+import os
+if __name__ == '__main__':
+  case_path = os.getcwdu
+  print()
