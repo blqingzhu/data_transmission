@@ -14,7 +14,7 @@ import re
 # from lonlat import getDistance, getDegree, computerOffsetPosition
 # from send import socketClient
 # from transcode import toBytes, toJson
-from db_fixture.terminal_data import select_data, update_termination_data,  update_task_data, \
+from db_fixture.terminal_data import select_data, update_termination_data, update_task_data, \
     insert_history_data, init_history_data
 from terminal.lonlat import computerOffsetPosition, getDistance, getDegree
 from terminal.send import socketClient
@@ -23,6 +23,7 @@ from terminal.transcode import toBytes, toJson
 Header = "AABB"  # 帧头
 Packet_type = ["03", "05"]  # 包类型
 textArr = ['523003,5', '523003,3', '523003,4', '4340,3', '3363,5', '3363,4', '84,0', '1624,3']
+interval_time = 10  # 终端上传间隔，单位s
 
 
 # 时间
@@ -45,11 +46,11 @@ def message():
 
 # 生成递增随机距离
 def floatrange(start, stop, steps):
-    if steps==1:
-        print(stop-start)
+    if steps == 1:
+        print(stop - start)
         return [round(stop, 6)]
     else:
-        return [start + round(float(i) * (stop - start),6) / (float(steps) - 1) for i in range(steps)]
+        return [start + round(float(i) * (stop - start), 6) / (float(steps) - 1) for i in range(steps)]
 
 
 # 生成随机正整数
@@ -116,15 +117,11 @@ def jsondeal(didno, oil, hours, minlon, minlat, degree, distance, json_date):  #
     LongitudeLatitude = computerOffsetPosition(minlon, minlat, degree, distance)
     jsonstring1 = "{\"did\":\"" + didno + "\"}"
     jsonstring2 = portjson(didno, oil, hours, LongitudeLatitude[0], LongitudeLatitude[1], str(json_date))
-    # INSERT INTO table_name ( task_id,json,status ) VALUES   ( value1, value2,...valueN );
-    task_id = 1
-    status = 0
-    test_json = jsonstring2.replace("\"", "\\\"")
     s_hex1 = toBytes(jsonstring1)
     s_hex2 = toBytes(jsonstring2)
     arr.append(s_hex1)
     arr.append(s_hex2)
-    arr.append(str(LongitudeLatitude[0])+','+str(LongitudeLatitude[1]))
+    arr.append(str(LongitudeLatitude[0]) + ',' + str(LongitudeLatitude[1]))
     arr.append(jsonstring2)
     return arr
 
@@ -132,8 +129,10 @@ def jsondeal(didno, oil, hours, minlon, minlat, degree, distance, json_date):  #
 # 发送位置信息
 def sendcontent(didno, oil, hours, minlon, minlat, degree, distance):
     mess = message()
-    uptime=date()
-    jsoncode = jsondeal(didno, oil, hours, minlon, minlat, degree, distance,uptime)
+    uptime = date()
+    oilC = str(randomFloat(oil, oil + 2, 2))
+    workH = hours + interval_time / 3600
+    jsoncode = jsondeal(didno, oilC, workH, minlon, minlat, degree, distance, uptime)
     '''
       帧头+包类型+消息ID+消息体（消息长度+消息内容）--字符型字节流
     '''
@@ -151,7 +150,7 @@ def sendcontent(didno, oil, hours, minlon, minlat, degree, distance):
             # print(content2)
             data2 = Clientsocket.sendsocket(content2)  # 需要发送的16进制数
 
-            update_termination_data(jsoncode[2], termination_id,oil, hours,uptime)
+            update_termination_data(jsoncode[2], termination_id, oil, hours, uptime)
         else:
             print("鉴权失败")
     test_json = jsoncode[3].replace("\"", "\\\"")
@@ -160,7 +159,7 @@ def sendcontent(didno, oil, hours, minlon, minlat, degree, distance):
 
 
 # 上传位置信息
-def portjson(did, oil, hours, lon, lat,json_date):
+def portjson(did, send_oil, send_hours, lon, lat, json_date):
     engineRpm = str(randomInt(100, 500))  # 发动机转速
 
     engineWaterTp = str(randomInt(90, 110))  # 发动机冷却液温度
@@ -168,12 +167,11 @@ def portjson(did, oil, hours, lon, lat,json_date):
     systemVoltage = str(randomInt(10, 32))  # 系统电压
     systemVoltageState = str(randomInt(0, 1))  # 系统电压状态
     faultcode = str(randomText(textArr))  # 故障编码
-    oilC = str(randomFloat(oil, oil + 2, 2))
-    workH = str(randomFloat(hours, oil + 2, 2))
+
     json = "{\"did\":\"" + did + "\",\"ts\":\"" + json_date + "\",\"mid\":\"28\",\"category\":2,\"version\":\"v3.3\"," \
-                                                                "\"data\":{\"oilConsume\":" + oilC + \
+                                                              "\"data\":{\"oilConsume\":" + send_oil + \
            ",\"systemVoltageState\":" + systemVoltageState + ",\"systemVoltage\":" + systemVoltage + ",\"engineRpm\":" + engineRpm + \
-           ",\"oilPressure\":" + oilPressure + ",\"workHours\":" + workH + ",\"engineWaterTp\":" + engineWaterTp + \
+           ",\"oilPressure\":" + oilPressure + ",\"workHours\":" + send_hours + ",\"engineWaterTp\":" + engineWaterTp + \
            ",\"engineErrorCode\":\"" + faultcode + "\",\"oilLevel\":36,\"lon\":" + str(lon) + ",\"lat\":" + str(
         lat) + "}}"
     # print(json)
@@ -200,10 +198,10 @@ def poport(didNo, oil, hours, lonlatlist):
         print("-----")
         # print(i)
         sendcontent(didNo, oil, hours, minlon, minlat, degree, i)
-        t = 10
-        print("休息%ss" % t)
-        time.sleep(t)
+        print("休息%ss" % interval_time)
+        time.sleep(interval_time)
     update_task_data(task_id, 2)
+
 
 def main():
     result = select_data()

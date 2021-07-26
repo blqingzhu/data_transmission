@@ -3,7 +3,7 @@
 
 from math import radians, sin, cos, degrees, atan2, atan, tan, acos, sqrt, pi
 
-
+from haversine import haversine
 # 两个经纬点的方位角
 def getDegree(latA, lonA, latB, lonB):
     """
@@ -25,26 +25,32 @@ def getDegree(latA, lonA, latB, lonB):
     brng = (brng + 360) % 360
     return brng
 
-
 # 两个经纬点的距离
 def getDistance(latA, lonA, latB, lonB):
-    ra = 6378140  # radius of equator: meter
-    rb = 6356755  # radius of polar: meter
-    flatten = (ra - rb) / ra  # Partial rate of the earth
-    # change angle to radians
-    radLatA = radians(latA)
-    radLonA = radians(lonA)
-    radLatB = radians(latB)
-    radLonB = radians(lonB)
-
-    pA = atan(rb / ra * tan(radLatA))
-    pB = atan(rb / ra * tan(radLatB))
-    x = acos(sin(pA) * sin(pB) + cos(pA) * cos(pB) * cos(radLonA - radLonB))
-    c1 = (sin(x) - x) * (sin(pA) + sin(pB)) ** 2 / cos(x / 2) ** 2
-    c2 = (sin(x) + x) * (sin(pA) - sin(pB)) ** 2 / sin(x / 2) ** 2
-    dr = flatten / 8 * (c1 - c2)
-    distance = ra * (x + dr)
+    ju1 = (latA,lonA)
+    ju2 = (latB,lonB)
+    distance = haversine(ju1,ju2) * 1000
+    print("距离为：" + str(distance))
     return distance
+# 两个经纬点的距离
+# def getDistance(latA, lonA, latB, lonB):
+#     ra = 6378140  # radius of equator: meter
+#     rb = 6356755  # radius of polar: meter
+#     flatten = (ra - rb) / ra  # Partial rate of the earth
+#     # change angle to radians
+#     radLatA = radians(latA)
+#     radLonA = radians(lonA)
+#     radLatB = radians(latB)
+#     radLonB = radians(lonB)
+#
+#     pA = atan(rb / ra * tan(radLatA))
+#     pB = atan(rb / ra * tan(radLatB))
+#     x = acos(sin(pA) * sin(pB) + cos(pA) * cos(pB) * cos(radLonA - radLonB))
+#     c1 = (sin(x) - x) * (sin(pA) + sin(pB)) ** 2 / cos(x / 2) ** 2
+#     c2 = (sin(x) + x) * (sin(pA) - sin(pB)) ** 2 / sin(x / 2) ** 2
+#     dr = flatten / 8 * (c1 - c2)
+#     distance = ra * (x + dr)
+#     return distance
 
 
 # 经纬度、距离dist和方向角brng，求另外一点经纬度函数分享
