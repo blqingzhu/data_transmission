@@ -33,12 +33,12 @@ def init_data():
     datas = {
         # 终端基础表数据
         'tb_termination_info': [
-            {'termination_id': '622458', '`lon_lat`': '112.101536, 40.760664', 'oilConsume': 3343.4,
+            {'termination_id': '622456', '`lon_lat`': '112.101536, 40.760664', 'oilConsume': 3343.4,
              'workHours': '453.34', 'creator': 'xueshan'},
         ],
         # 终端任务表数据
         'tb_termination_task': [
-            { 'task_id': '1', 'termination_id': '622458', 'task_lonlat': '112.318859,40.851358', 'status': 0,
+            { 'task_id': '2', 'termination_id': '622456', 'task_lonlat': '112.318859,40.851358', 'status': 0,
              'creator': 'xueshan'},
         ],
     }

@@ -4,8 +4,7 @@ import os
 # 所有大小写字母
 import string
 from faker import Faker
-
-
+import warnings
 
 parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -52,6 +51,11 @@ def random_string():
     # return ''.join(random.sample(ran_str, num))
 
 
+# 随机位数数字
+def random_digits(len):
+    return ''.join(str(i) for i in random.sample(range(0, 9), len))
+
+
 # 随机生成手机号码
 def phoneNO():
     return random.choice(phon_prelist) + "".join(random.choice("0123456789") for i in range(8))
@@ -89,8 +93,10 @@ def random_name_str():
 # 图片转base64编码
 def converter(filename):
     filedir = parentdir + '\image\\' + filename
+    warnings.simplefilter('ignore', ResourceWarning)
     fs = open(file=filedir, mode='rb')  # 二进制方式打开图文件
     base64_data = base64.b64encode(fs.read())  # 读取文件内容，转换为base64编码
+
     return base64_data
 
 
@@ -98,4 +104,3 @@ if __name__ == '__main__':
     fake = Faker(locale='zh_CN')
 
     print("公司类".center(20, "-"))
-
