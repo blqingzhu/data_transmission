@@ -33,14 +33,13 @@ def toJson(s):
     p1 = re.compile(r'[{](.*?)[}]', re.S)  # 最小匹配
     p2 = re.compile(r'[{](.*)[}]', re.S)  # 贪婪匹配
     result = re.findall(p1, s)
-    if len(result) >= 1:
-        # print(len(result))
-        # print(result[len(result) - 1])
-
-        rejson = "{" + result[len(result) - 1] + "}"
-        # print(rejson)
-
-        return json.loads(rejson)
+    for i in result:
+        if len(i) >= 1:
+            # print(len(result))
+            # print(result[len(result) - 1])
+            rejson = "{" + result[len(result) - 1] + "}"
+            rejson=rejson.replace("\\",'')
+            return json.loads(rejson)
     else:
         print('')
     # print(re.findall(p1, string))

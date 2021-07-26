@@ -64,7 +64,7 @@ def select_data():
     mysqldb = DB(host, port, db, user, password)
     update_sql = 'update tb_termination_task tt, (select b1.id from tb_termination_task b1, (select t.termination_id, max(t.create_time) as time1 from tb_termination_task t where t.status in (0,1) group by t.termination_id having count(*) > 1) b2 where b1.termination_id=b2.termination_id and b1.create_time <> b2.time1) tt1 set tt.status = 3 where tt.id = tt1.id;'
     mysqldb.updateData(update_sql)
-    select_sql = 'select a.task_id,a.task_lonlat,b.termination_id,b.lon_lat,b.oilConsume,b.workHours from tb_termination_task a, tb_termination_info b where a.status =0 and b.termination_id=a.termination_id;'
+    select_sql = 'select a.task_id,a.step,a.task_lonlat,b.termination_id,b.lon_lat,b.oilConsume,b.workHours from tb_termination_task a, tb_termination_info b where a.status =0 and b.termination_id=a.termination_id;'
     results = mysqldb.select(select_sql)
     mysqldb.close()
     # for row in results:

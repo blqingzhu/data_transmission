@@ -130,9 +130,9 @@ def jsondeal(didno, oil, hours, minlon, minlat, degree, distance, json_date):  #
 def sendcontent(didno, oil, hours, minlon, minlat, degree, distance):
     mess = message()
     uptime = date()
-    oilC = str(randomFloat(oil, oil + 2, 2))
-    workH = hours + interval_time / 3600
-    jsoncode = jsondeal(didno, oilC, workH, minlon, minlat, degree, distance, uptime)
+    oil = str(randomFloat(oil, oil + 2, 2))
+    hours =str( hours + interval_time / 3600)
+    jsoncode = jsondeal(didno, oil, hours, minlon, minlat, degree, distance, uptime)
     '''
       帧头+包类型+消息ID+消息体（消息长度+消息内容）--字符型字节流
     '''
@@ -159,7 +159,7 @@ def sendcontent(didno, oil, hours, minlon, minlat, degree, distance):
 
 
 # 上传位置信息
-def portjson(did, send_oil, send_hours, lon, lat, json_date):
+def portjson(did, oil, hours, lon, lat, json_date):
     engineRpm = str(randomInt(100, 500))  # 发动机转速
 
     engineWaterTp = str(randomInt(90, 110))  # 发动机冷却液温度
@@ -167,18 +167,17 @@ def portjson(did, send_oil, send_hours, lon, lat, json_date):
     systemVoltage = str(randomInt(10, 32))  # 系统电压
     systemVoltageState = str(randomInt(0, 1))  # 系统电压状态
     faultcode = str(randomText(textArr))  # 故障编码
-
     json = "{\"did\":\"" + did + "\",\"ts\":\"" + json_date + "\",\"mid\":\"28\",\"category\":2,\"version\":\"v3.3\"," \
-                                                              "\"data\":{\"oilConsume\":" + send_oil + \
+                                                              "\"data\":{\"oilConsume\":" + oil + \
            ",\"systemVoltageState\":" + systemVoltageState + ",\"systemVoltage\":" + systemVoltage + ",\"engineRpm\":" + engineRpm + \
-           ",\"oilPressure\":" + oilPressure + ",\"workHours\":" + send_hours + ",\"engineWaterTp\":" + engineWaterTp + \
+           ",\"oilPressure\":" + oilPressure + ",\"workHours\":" + hours + ",\"engineWaterTp\":" + engineWaterTp + \
            ",\"engineErrorCode\":\"" + faultcode + "\",\"oilLevel\":36,\"lon\":" + str(lon) + ",\"lat\":" + str(
         lat) + "}}"
     # print(json)
     return json
 
 
-def poport(didNo, oil, hours, lonlatlist):
+def poport(didNo, oil, hours, lonlatlist,task_step):
     # print(lonlat)
     minlat = lonlatlist['minlat']
     # print(minlat)
@@ -190,7 +189,7 @@ def poport(didNo, oil, hours, lonlatlist):
     # print(maxlon)
     distance = getDistance(minlat, minlon, maxlat, maxlon)  # 计算距离
     degree = getDegree(minlat, minlon, maxlat, maxlon)  # 计算方位角
-    distance_list = floatrange(0, distance, 1)
+    distance_list = floatrange(0, distance, task_step)
     print(len(distance_list))
     print(distance_list)
     # print (distance_list)
@@ -209,6 +208,7 @@ def main():
         global task_id
         global termination_id
         task_id = row['task_id']
+        task_step = row['step']
         termination_id = row['termination_id']
         task_lonlat = row['task_lonlat'].split(',')
         lon_lat = row['lon_lat'].split(',')
@@ -216,7 +216,7 @@ def main():
         workHours = row['workHours']
         lonlat_list = dict(minlon=float(lon_lat[0]), minlat=float(lon_lat[1]), maxlon=float(task_lonlat[0]),
                            maxlat=float(task_lonlat[1]))
-        poport(termination_id, oilConsume, workHours, lonlat_list)
+        poport(termination_id, oilConsume, workHours, lonlat_list,task_step)
 
 
 if __name__ == '__main__':
