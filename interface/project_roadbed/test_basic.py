@@ -8,6 +8,7 @@ import os, sys
 from faker import Faker
 
 from common.random_common import random_string
+from interface.common.login import companyLogin
 from interface.global_var import global_var_model, roadbed_var
 from utx import tag, Tag
 
@@ -21,7 +22,7 @@ class test_basic(unittest.TestCase):
 
     def setUp(self):
         # 登录
-        self.login = global_var_model.company_login
+        # self.login = global_var_model.company_login
         # 获取项目
         self.company_ProjectList = global_var_model.company_ProjectList
         # 添加工艺层级
@@ -46,27 +47,10 @@ class test_basic(unittest.TestCase):
         """登录
            :return:
         """
-        payload = {'name': self.company_admin_userName,
-                   'passwd': hashlib.md5(self.company_admin_password.encode()).hexdigest()}
-        r = requests.post(self.login, data=json.dumps(payload), headers=self.headers)
-        r.encoding = 'utf-8'
-        self.result = r.json()
-        data = self.result['data']
+        self.result = companyLogin(self.company_admin_userName, self.company_admin_password, self.headers)
         self.g['test_1_one'] = self.result['code']
-        self.g["uid"] = data['uid']
-        self.g["companyCode"] = data['companyCode']
-        self.g["userSign"] = data['userSign']
-        self.g["roleType"] = data['roleType']
-        self.headers[
-            'Cookie'] = 'Admin-Token=%s; userName=%s; passwd=%s; headerName=%s; roleType=%s; companyCode=%s; projectCode=null; registerphone=%s; uid=%s; userSign=%s' % (
-            self.g["uid"], self.company_admin_userName, self.company_admin_password, self.company_admin_userName,
-            self.g["roleType"], self.g["companyCode"], self.company_admin_phone, self.g["uid"],
-            self.g["userSign"])
-        self.headers['roleType'] = str(self.g["roleType"])
-        self.headers['companyCode'] = self.g["companyCode"]
-        self.headers['projectCode'] = 'null'
-        self.headers['uid'] = self.g["uid"]
-        self.assertEqual(r.status_code, 200)
+        self.g["companyCode"] = self.result['companyCode']
+        self.assertEqual(self.result['status_code'], 200)
         self.assertEqual(self.result['msg'], 'success')
         self.assertEqual(self.result['code'], '0')
 

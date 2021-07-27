@@ -10,6 +10,7 @@ from common.random_common import random_string, converter
 
 from faker import Faker
 
+from interface.common.login import admin_login
 from interface.global_var import global_var_model
 from utx import tag, Tag
 
@@ -37,8 +38,8 @@ class test_register_admin(unittest.TestCase):
         self.coment = global_var_model.coment
         self.headers = global_var_model.headers
         # 管理后台登录
-        self.login = global_var_model.login
-        #获取菜单
+        # self.login = global_var_model.login
+        # 获取菜单
         self.menu = global_var_model.menu
         # 添加角色
         self.roleAdd = global_var_model.roleAdd
@@ -172,16 +173,10 @@ class test_register_admin(unittest.TestCase):
         """登录
            :return:
         """
-        payload = {'userName': self.admin_userName, 'password': hashlib.md5(self.admin_password.encode()).hexdigest()}
-        r = requests.post(self.login, data=json.dumps(payload), headers=self.admin_headers)
-        r.encoding = 'utf-8'
-        self.result = r.json()
-        data = self.result['data']
+        self.result  = admin_login(self.admin_headers)
+        self.admin_headers = self.result['admin_headers']
         self.g['test_6_one'] = self.result['code']
-        self.g["admin_uid"] = data['uid']
-        self.admin_headers['Cookie'] = 'Admin-Token=' + self.g["admin_uid"]
-        self.admin_headers['uid'] = self.g["admin_uid"]
-        self.assertEqual(r.status_code, 200)
+        self.assertEqual(self.result['status_code'], 200)
         self.assertEqual(self.result['msg'], 'success')
         self.assertEqual(self.result['code'], '0')
 

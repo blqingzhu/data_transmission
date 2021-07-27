@@ -9,6 +9,7 @@ from common.random_common import random_string
 
 from faker import Faker
 
+from interface.common.login import admin_login, companyLogin
 from interface.global_var import global_var_model
 from utx import tag, Tag
 
@@ -24,7 +25,7 @@ class test_register_project(unittest.TestCase):
     def setUp(self):
         """管理后台"""
         # 登录
-        self.login = global_var_model.login
+        # self.login = global_var_model.login
         # 企业列表查找企业
         self.findCheckedCompany = global_var_model.findCheckedCompany
         # 企业列表查找设备
@@ -37,7 +38,7 @@ class test_register_project(unittest.TestCase):
         self.admin_headers = global_var_model.admin_headers
         """服务后台"""
         # 登录
-        self.company_login = global_var_model.company_login
+        # self.company_login = global_var_model.company_login
         ## 获取项目类别
         self.company_ProjectType = global_var_model.company_ProjectType
         ## 获取省
@@ -62,113 +63,93 @@ class test_register_project(unittest.TestCase):
     def tearDown(self):
         print(self.result)
 
-    # @tag(Tag.SMOKE)
-    # def test_1_one(self):
-    #     """管理后台：登录
-    #        :return:
-    #     """
-    #     payload = {'userName': self.admin_userName, 'password': hashlib.md5(self.admin_password.encode()).hexdigest()}
-    #     r = requests.post(self.login, data=json.dumps(payload), headers=self.admin_headers)
-    #     r.encoding = 'utf-8'
-    #     self.result = r.json()
-    #     data = self.result['data']
-    #     self.g['test_1_one'] = self.result['code']
-    #     self.g["admin_uid"] = data['uid']
-    #     self.admin_headers['Cookie'] = 'Admin-Token=' + self.g["admin_uid"]
-    #     self.admin_headers['uid'] = self.g["admin_uid"]
-    #     self.assertEqual(r.status_code, 200)
-    #     self.assertEqual(self.result['msg'], 'success')
-    #     self.assertEqual(self.result['code'], '0')
-    #
-    # @tag(Tag.SMOKE)
-    # def test_2_one(self):
-    #     """管理后台：查找需授权企业
-    #        :return:
-    #     """
-    #     if self.g['test_1_one'] != '0':
-    #         result = '{"msg": "test_1_one用例失败"}'
-    #         self.result = json.loads(result)
-    #         self.skipTest("result")
-    #     payload = {"pageNo": 1, "pageSize": 10, "name": self.company_name}
-    #     r = requests.post(self.findCheckedCompany, data=json.dumps(payload), headers=self.admin_headers)
-    #     r.encoding = 'utf-8'
-    #     self.result = r.json()
-    #     data = self.result['data']['list']
-    #     for i in data:
-    #         if i['name'] == self.company_name:
-    #             self.g['code'] = i['code']
-    #     self.g['test_2_one'] = self.result['code']
-    #     self.assertEqual(r.status_code, 200)
-    #     self.assertEqual(self.result['msg'], 'success')
-    #     self.assertEqual(self.result['code'], '0')
-    #
-    # @tag(Tag.SMOKE)
-    # def test_3_one(self):
-    #     """管理后台：查找未授权设备
-    #        :return:
-    #     """
-    #     if self.g['test_2_one'] != '0':
-    #         result = '{"msg": "test_2_one用例失败"}'
-    #         self.result = json.loads(result)
-    #         self.skipTest("result")
-    #     payload = {"pageNo": 1, "pageSize": 10, "code": self.g['code'], "empowerStatus": 0}
-    #     r = requests.post(self.findBindDevicePage, data=json.dumps(payload), headers=self.admin_headers)
-    #     r.encoding = 'utf-8'
-    #     self.result = r.json()
-    #     data = self.result['data']['list']
-    #     deviceCodelist = []
-    #     for i in data:
-    #         deviceCodelist.append(i['deviceCode'])
-    #     self.g['deviceCodeList'] = deviceCodelist
-    #     self.g['test_3_one'] = self.result['code']
-    #     self.assertEqual(r.status_code, 200)
-    #     self.assertEqual(self.result['msg'], 'success')
-    #     self.assertEqual(self.result['code'], '0')
-    #
-    # @tag(Tag.SMOKE)
-    # def test_4_one(self):
-    #     """管理后台：数据授权
-    #        :return:
-    #     """
-    #     if self.g['test_3_one'] != '0':
-    #         result = '{"msg": "test_3_one用例失败"}'
-    #         self.result = json.loads(result)
-    #         self.skipTest("result")
-    #     payload = {"code": self.g['code'], "list": self.g['deviceCodeList']}
-    #     r = requests.post(self.bindTerminal, data=json.dumps(payload), headers=self.admin_headers)
-    #     r.encoding = 'utf-8'
-    #     self.result = r.json()
-    #     self.g['test_4_one'] = self.result['code']
-    #     self.assertEqual(r.status_code, 200)
-    #     self.assertEqual(self.result['msg'], 'success')
-    #     self.assertEqual(self.result['code'], '0')
+    @tag(Tag.SMOKE)
+    def test_1_one(self):
+        """管理后台：登录
+           :return:
+        """
+        """登录
+                   :return:
+                """
+        self.result = admin_login(self.admin_headers)
+        self.admin_headers = self.result['admin_headers']
+        self.g['test_1_one'] = self.result['code']
+        self.assertEqual(self.result['status_code'], 200)
+        self.assertEqual(self.result['msg'], 'success')
+        self.assertEqual(self.result['code'], '0')
+
+    @tag(Tag.SMOKE)
+    def test_2_one(self):
+        """管理后台：查找需授权企业
+           :return:
+        """
+        if self.g['test_1_one'] != '0':
+            result = '{"msg": "test_1_one用例失败"}'
+            self.result = json.loads(result)
+            self.skipTest("result")
+        payload = {"pageNo": 1, "pageSize": 10, "name": self.company_name}
+        r = requests.post(self.findCheckedCompany, data=json.dumps(payload), headers=self.admin_headers)
+        r.encoding = 'utf-8'
+        self.result = r.json()
+        data = self.result['data']['list']
+        for i in data:
+            if i['name'] == self.company_name:
+                self.g['code'] = i['code']
+        self.g['test_2_one'] = self.result['code']
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(self.result['msg'], 'success')
+        self.assertEqual(self.result['code'], '0')
+
+    @tag(Tag.SMOKE)
+    def test_3_one(self):
+        """管理后台：查找未授权设备
+           :return:
+        """
+        if self.g['test_2_one'] != '0':
+            result = '{"msg": "test_2_one用例失败"}'
+            self.result = json.loads(result)
+            self.skipTest("result")
+        payload = {"pageNo": 1, "pageSize": 10, "code": self.g['code'], "empowerStatus": 0}
+        r = requests.post(self.findBindDevicePage, data=json.dumps(payload), headers=self.admin_headers)
+        r.encoding = 'utf-8'
+        self.result = r.json()
+        data = self.result['data']['list']
+        deviceCodelist = []
+        for i in data:
+            deviceCodelist.append(i['deviceCode'])
+        self.g['deviceCodeList'] = deviceCodelist
+        self.g['test_3_one'] = self.result['code']
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(self.result['msg'], 'success')
+        self.assertEqual(self.result['code'], '0')
+
+    @tag(Tag.SMOKE)
+    def test_4_one(self):
+        """管理后台：数据授权
+           :return:
+        """
+        if self.g['test_3_one'] != '0':
+            result = '{"msg": "test_3_one用例失败"}'
+            self.result = json.loads(result)
+            self.skipTest("result")
+        payload = {"code": self.g['code'], "list": self.g['deviceCodeList']}
+        r = requests.post(self.bindTerminal, data=json.dumps(payload), headers=self.admin_headers)
+        r.encoding = 'utf-8'
+        self.result = r.json()
+        self.g['test_4_one'] = self.result['code']
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(self.result['msg'], 'success')
+        self.assertEqual(self.result['code'], '0')
 
     @tag(Tag.SMOKE)
     def test_5_one(self):
         """服务平台：登录
            :return:
         """
-        payload = {'name': self.company_admin_userName,
-                   'passwd': hashlib.md5(self.company_admin_password.encode()).hexdigest()}
-        r = requests.post(self.company_login, data=json.dumps(payload), headers=self.admin_headers)
-        r.encoding = 'utf-8'
-        self.result = r.json()
-        data = self.result['data']
+        self.result = companyLogin(self.company_admin_userName, self.company_admin_password, self.headers)
         self.g['test_5_one'] = self.result['code']
-        self.g["admin_uid"] = data['uid']
-        self.g["companyCode"] = data['companyCode']
-        self.g["admin_userSign"] = data['userSign']
-        self.g["roleType"] = data['roleType']
-        self.headers[
-            'Cookie'] = 'Admin-Token=%s; userName=%s; passwd=%s; headerName=%s; roleType=%s; companyCode=%s; projectCode=null; registerphone=%s; uid=%s; userSign=%s' % (
-            self.g["admin_uid"], self.company_admin_userName, self.company_admin_password, self.company_admin_userName,
-            self.g["roleType"], self.g["companyCode"], self.company_admin_phone, self.g["admin_uid"],
-            self.g["admin_userSign"])
-        self.headers['roleType'] = str(self.g["roleType"])
-        self.headers['companyCode'] = self.g["companyCode"]
-        self.headers['projectCode'] = 'null'
-        self.headers['uid'] = self.g["admin_uid"]
-        self.assertEqual(r.status_code, 200)
+        self.g["companyCode"] = self.result['companyCode']
+        self.assertEqual(self.result['status_code'], 200)
         self.assertEqual(self.result['msg'], 'success')
         self.assertEqual(self.result['code'], '0')
 

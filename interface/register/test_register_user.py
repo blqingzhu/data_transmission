@@ -7,6 +7,7 @@ from common.random_common import random_string
 
 from faker import Faker
 
+from interface.common.login import companyLogin
 from interface.global_var import global_var_model
 from utx import tag, Tag
 
@@ -21,7 +22,7 @@ class test_register_user(unittest.TestCase):
 
     def setUp(self):
         # 登录
-        self.login = global_var_model.company_login
+        # self.login = global_var_model.company_login
         # 获取菜单权限
         self.menu = global_var_model.company_menu
         # 添加角色
@@ -53,27 +54,10 @@ class test_register_user(unittest.TestCase):
         """登录
            :return:
         """
-        payload = {'name': self.company_admin_userName,
-                   'passwd': hashlib.md5(self.company_admin_password.encode()).hexdigest()}
-        r = requests.post(self.login, data=json.dumps(payload), headers=self.headers)
-        r.encoding = 'utf-8'
-        self.result = r.json()
-        data = self.result['data']
+        self.result = companyLogin(self.company_admin_userName, self.company_admin_password, self.headers)
         self.g['test_1_one'] = self.result['code']
-        self.g["admin_uid"] = data['uid']
-        self.g["companyCode"] = data['companyCode']
-        self.g["admin_userSign"] = data['userSign']
-        self.g["roleType"] = data['roleType']
-        self.headers[
-            'Cookie'] = 'Admin-Token=%s; userName=%s; passwd=%s; headerName=%s; roleType=%s; companyCode=%s; projectCode=null; registerphone=%s; uid=%s; userSign=%s' % (
-            self.g["admin_uid"], self.company_admin_userName, self.company_admin_password, self.company_admin_userName,
-            self.g["roleType"], self.g["companyCode"], self.company_admin_phone, self.g["admin_uid"],
-            self.g["admin_userSign"])
-        self.headers['roleType'] = str(self.g["roleType"])
-        self.headers['companyCode'] = self.g["companyCode"]
-        self.headers['projectCode'] = 'null'
-        self.headers['uid'] = self.g["admin_uid"]
-        self.assertEqual(r.status_code, 200)
+        self.g["companyCode"]= self.result['companyCode']
+        self.assertEqual(self.result['status_code'], 200)
         self.assertEqual(self.result['msg'], 'success')
         self.assertEqual(self.result['code'], '0')
 
