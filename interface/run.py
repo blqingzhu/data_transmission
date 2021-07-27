@@ -13,5 +13,5 @@ if __name__ == '__main__':
     case_path = os.path.basename(os.getcwd())
     title = "测试"  # 用例名称
     runner = TestRunner(title, case_path)
-    except_fileList = ['register']  # 不执行的用例目录
+    except_fileList = ['']  # 不执行的用例目录
     runner.run_test(except_fileList)

@@ -30,7 +30,6 @@ def getDistance(latA, lonA, latB, lonB):
     ju1 = (latA,lonA)
     ju2 = (latB,lonB)
     distance = haversine(ju1,ju2) * 1000
-    print("距离为：" + str(distance))
     return distance
 # 两个经纬点的距离
 # def getDistance(latA, lonA, latB, lonB):

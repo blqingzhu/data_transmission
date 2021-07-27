@@ -6,6 +6,8 @@ from os.path import abspath, dirname
 
 import configparser as cparser
 
+from common.random_common import random_string
+
 sys.path.append('../db_fixture')
 try:
     from mysql_db import DB
@@ -38,7 +40,7 @@ def init_data():
         ],
         # 终端任务表数据
         'tb_termination_task': [
-            { 'task_id': '2', 'termination_id': '622456', 'task_lonlat': '112.318859,40.851358', 'status': 0,
+            { 'task_id': random_string(), 'termination_id': '622456', 'step': '10','task_lonlat': '112.318859,40.851358', 'status': 0,
              'creator': 'xueshan'},
         ],
     }
@@ -82,7 +84,7 @@ def update_termination_data(lon_lat, termination_id, oil, hours, uptime):
     # update_sql = 'update tb_termination_info set lon_lat=\"' + str(lon_lat) + '\", oilConsume=\"' + str(
     #     oil) + '\", workHours=\"' + str(hours) + '\", prompt_time=\"' + '2021-07-23 10:10:40.40' + '\", modify_time=\"' + \
     #              '2021-07-23 10:10:40.40' + '\" where termination_id=\"' + str(termination_id) + '\"'
-    print(update_sql)
+    # print(update_sql)
     mysqldb.updateData(update_sql)
     mysqldb.close()
 
