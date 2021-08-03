@@ -3,6 +3,8 @@ import json
 import unittest
 import requests
 import os, sys
+
+from common.csvfile import create_csv, append_csv
 from common.random_common import random_string, random_digits
 
 from faker import Faker
@@ -244,7 +246,7 @@ class test_register_device(unittest.TestCase):
             self.result = json.loads(result)
             self.skipTest("result")
         partsType = 2  # 控制器
-        r = self.common_DeviceParts( partsType)
+        r = self.common_DeviceParts(partsType)
         self.result = r.json()
         self.g['test_9_one'] = self.result['code']
         print(self.g['test_9_one'])
@@ -270,6 +272,8 @@ class test_register_device(unittest.TestCase):
                    "controllerCode": self.g['controllerCode'],
                    "typeCode": self.g['typeCode'], "modelId": self.g['modelId'], "fromType": 1, "openStatus": 0,
                    "contactPhone": "13526212021", "depreciateMoney": "123", "driverMoney": "12", "serviceDays": "345"}
+
+        print(payload)
         r = requests.post(self.addDevice, data=json.dumps(payload), headers=self.admin_headers)
         r.encoding = 'utf-8'
         self.result = r.json()
@@ -294,6 +298,10 @@ class test_register_device(unittest.TestCase):
         r = requests.post(self.addTerminal, data=json.dumps(payload), headers=self.admin_headers)
         r.encoding = 'utf-8'
         self.result = r.json()
+        if self.result['code'] == '0':
+            create_csv("terminalId.csv")
+            datas=[[terminalId]]
+            append_csv("terminalId.csv", datas)
         self.g['test_11_one'] = self.result['code']
         self.assertEqual(r.status_code, 200)
         self.assertEqual(self.result['msg'], 'success')
@@ -301,4 +309,5 @@ class test_register_device(unittest.TestCase):
 
 
 if __name__ == '__main__':
+
     unittest.main()

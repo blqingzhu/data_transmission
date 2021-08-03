@@ -151,6 +151,7 @@ class test_register_admin(unittest.TestCase):
         # headers['Referer'] = http_pex + 'thirdstepregister?name&companyNumber&phone=%s&userName=%s&userEmail=%s' % (
         #     phone, self.g["userName"], self.g["userEmail"])
         print("公司名称：" + name)
+        print(payload)
         r = requests.post(self.coment, data=json.dumps(payload), headers=self.headers)
         self.g["company"] = name
         self.result = r.json()

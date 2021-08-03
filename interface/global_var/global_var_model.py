@@ -1,10 +1,10 @@
 """
 服务平台用户信息
 """
-company_admin_userName = 'vJSXgNDaMi9'
-company_admin_password = '5JSjZ8'
-company_admin_phone = '18172163341'
-company_name = '飞利信网络有限公司'
+company_admin_userName = 'kD9weNv1O54'
+company_admin_password = '0P5WuH'
+company_admin_phone = '13369947916'
+company_name = '鸿睿思博信息有限公司'
 ProjectTypeName='土方项目'
 ProjecName='项目名称_eYAgHl5bK'
 """
@@ -93,7 +93,7 @@ addProduct = admin_http_pex + "api/iot-base-server/v2/system/productManger/addPr
 findProduct = admin_http_pex + "api/iot-base-server/v2/system/productManger/selectProduct"
 # 创建厂商产品型号
 addDeviceModel = admin_http_pex + "api/iot-base-server/v2/system/deviceModel/add"
-# 查找厂商产品型号api/iot-base-server/v2/system/deviceParts/add
+# 查找厂商产品型号
 findDeviceModel = admin_http_pex + "api/iot-base-server/v2/system/public/code/getModelList"
 # 创建设备部件
 addDeviceParts = admin_http_pex + "api/iot-base-server/v2/system/deviceParts/add"

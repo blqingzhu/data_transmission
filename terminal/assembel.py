@@ -128,12 +128,12 @@ def jsondeal(didno, oil, hours, minlon, minlat, degree, distance, json_date):  #
 
 
 # 发送位置信息
-def sendcontent(didno,  minlon, minlat, degree, distance):
+def sendcontent(didno, minlon, minlat, degree, distance):
     mess = message()
     uptime = date()
     global oilConsume
     global workHours
-    oilConsume=randomFloat(oilConsume, oilConsume + 2, 2)
+    oilConsume = randomFloat(oilConsume, oilConsume + 2, 2)
     workHours = workHours + interval_time / 3600
     oil = str(oilConsume)
     hours = str(workHours)
@@ -207,7 +207,7 @@ def poport(didNo, lonlatlist, task_step):
     for i in distance_list:
         print("-----")
         # print(i)
-        sendcontent(didNo,  minlon, minlat, degree, i)
+        sendcontent(didNo, minlon, minlat, degree, i)
         print("休息%ss" % interval_time)
         time.sleep(interval_time)
     update_task_data(task_id, 2)
@@ -225,11 +225,11 @@ def main():
         lon_lat = row['lon_lat'].split(',')
         global oilConsume
         global workHours
-        oilConsume= row['oilConsume']
-        workHours= row['workHours']
+        oilConsume = row['oilConsume']
+        workHours = row['workHours']
         lonlat_list = dict(minlon=float(lon_lat[0]), minlat=float(lon_lat[1]), maxlon=float(task_lonlat[0]),
                            maxlat=float(task_lonlat[1]))
-        poport(termination_id,  lonlat_list, task_step)
+        poport(termination_id, lonlat_list, task_step)
 
 
 if __name__ == '__main__':

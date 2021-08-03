@@ -49,23 +49,8 @@ class socketClient():
     def sendsocket(self, content):
         data=''
         self.tctimeClient.settimeout(5.0)
-        #     tctimeClient = socket(AF_INET, SOCK_STREAM)
-        #     try:
-        #         tctimeClient.connect(ADDR)  # 连接Gateway服务器
-        #     except Exception as e:
-        #         print("connect excepiton: ")
-        #         print(e)
-        # # a = b'\xAA\xBB\x01'
-        #
-        # # data = struct.pack("%dB" % (len(a)), *a)
         while True:
-            # data = input(">")
-
-            # if not data:
-            # break
-            # tctimeClient.send(data.encode())
-            self.tctimeClient.send(content)  # .encode()
-            # time.sleep(10)
+            self.tctimeClient.send(content)
             try:
                 data = self.tctimeClient.recv(BUFFSIZE)
             except Exception as e:
